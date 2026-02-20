@@ -1,0 +1,8 @@
+name = "monochromacy"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Add your env vars here for local wrangler dev
+# ANTHROPIC_API_KEY = "sk-ant-..."
+# For production, set via: wrangler pages secret put ANTHROPIC_API_KEY
