@@ -1,3 +1,5 @@
+"use client";
+
 import Nav from "@/components/Nav";
 
 const innovations = [
