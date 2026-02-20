@@ -1,0 +1,517 @@
+/* HERO */
+.hero {
+  min-height: 100vh;
+  background: var(--black);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 64px;
+  overflow: hidden;
+}
+
+.heroLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem 4rem 6rem 6rem;
+}
+
+.heroEyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.heroHeadline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 5vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.0;
+  color: var(--white);
+  margin-bottom: 2rem;
+}
+
+.heroHeadline em {
+  font-style: italic;
+  color: var(--accent);
+  display: block;
+}
+
+.heroSub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: rgba(245,243,239,0.5);
+  max-width: 420px;
+  margin-bottom: 3rem;
+}
+
+.heroCtas {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  padding: 0.9rem 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: var(--accent);
+  color: var(--black);
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.btnPrimary:hover { background: var(--white); }
+
+.btnOutline {
+  padding: 0.9rem 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.3);
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.btnOutline:hover { border-color: var(--accent); color: var(--accent); }
+
+.heroRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+}
+
+.heroBadge {
+  width: 320px;
+  height: 320px;
+  border: 1px solid rgba(200,181,96,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: spinSlow 30s linear infinite;
+}
+
+.heroBadge::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(200,181,96,0.15);
+  border-radius: 50%;
+}
+
+.heroBadgeInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  animation: spinSlow 30s linear infinite reverse;
+  text-align: center;
+}
+
+.badgeIcon { font-size: 3rem; margin-bottom: 0.5rem; }
+
+.badgeText {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.badgeSub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(245,243,239,0.4);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* TICKER */
+.ticker {
+  background: var(--accent);
+  padding: 0.75rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tickerInner {
+  display: inline-block;
+  animation: ticker 25s linear infinite;
+}
+
+.tickerInner span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin: 0 2rem;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ABOUT */
+.about {
+  padding: 8rem 6rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sectionLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionLabel::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.3;
+  max-width: 80px;
+}
+
+.missionGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 6rem;
+  align-items: start;
+  margin-top: 3rem;
+}
+
+.missionHeadline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.missionHeadline em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.divider {
+  width: 60px;
+  height: 2px;
+  background: var(--accent);
+  margin: 1.5rem 0;
+}
+
+.missionText {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 2;
+  color: #555;
+  margin-top: 1rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.statBox {
+  padding: 2rem;
+  border: 1px solid rgba(10,10,10,0.1);
+  transition: border-color 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.statBox:hover { border-color: var(--accent); }
+
+.statBox::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+
+.statBox:hover::before { transform: scaleX(1); }
+
+.statNumber {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  letter-spacing: 0.05em;
+  color: var(--black);
+  line-height: 1;
+}
+
+.statLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+/* TWEETS */
+.tweets {
+  background: var(--black);
+  padding: 8rem 6rem;
+}
+
+.tweetsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+}
+
+.sectionLabelLight {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.tweetsHeadline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--white);
+  max-width: 500px;
+}
+
+.tweetsHeadline em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.socialLinks { display: flex; gap: 1rem; }
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white);
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+}
+
+.socialLink:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(200,181,96,0.1);
+}
+
+.tweetsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.tweetCard {
+  background: #1e1e1e;
+  padding: 2rem;
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.tweetCard:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+
+.tweetFeatured {
+  grid-column: span 2;
+  background: #1a1a1a;
+}
+
+.tweetHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.tweetAvatar {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  color: var(--black);
+  flex-shrink: 0;
+}
+
+.tweetMeta { flex: 1; }
+
+.tweetName {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.tweetHandle {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.tweetPlatform {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.3);
+}
+
+.tweetBody {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: rgba(245,243,239,0.8);
+}
+
+.tweetTags {
+  margin-top: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  opacity: 0.7;
+  line-height: 1.8;
+}
+
+/* FOOTER */
+.footer {
+  background: #050505;
+  padding: 4rem 6rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.footerLogo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--white);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.footerLogo span { color: var(--accent); }
+
+.footerTagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.8;
+  max-width: 320px;
+}
+
+.footerColTitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.footerLinks {
+  list-style: none;
+}
+
+.footerLinks li { margin-bottom: 0.75rem; }
+
+.footerLinks a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerLinks a:hover { color: var(--white); }
+
+.footerBottom {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerCopy {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.2);
+}
+
+.footerSocial { display: flex; gap: 1rem; }
+
+.footerSocial a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.3);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+
+.footerSocial a:hover { color: var(--accent); }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .heroRight { display: none; }
+  .heroLeft { padding: 3rem; }
+  .missionGrid { grid-template-columns: 1fr; gap: 2rem; }
+  .tweetsGrid { grid-template-columns: 1fr; }
+  .tweetFeatured { grid-column: span 1; }
+  .about, .tweets { padding: 5rem 2rem; }
+  .footer { padding: 3rem 2rem 1.5rem; }
+  .footerGrid { grid-template-columns: 1fr; gap: 2rem; }
+  .statsGrid { grid-template-columns: 1fr 1fr; }
+}
