@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export const runtime = "edge";
 
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages } = body;
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = getRequestContext().env.ANTHROPIC_API_KEY as string | undefined;
 
     if (!apiKey) {
       return NextResponse.json(
