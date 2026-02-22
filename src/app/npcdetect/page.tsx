@@ -110,7 +110,7 @@ export default function NPCDetect() {
       setMessages([msg]);
       setQuestionCount(1);
     } catch (e) {
-      setError("Connection issue. HR-9 is experiencing technical difficulties.");
+      setError((e as Error).message || "Connection issue. HR-9 is experiencing technical difficulties.");
     }
     setIsWaiting(false);
   }
