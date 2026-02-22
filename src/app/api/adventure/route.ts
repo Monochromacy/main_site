@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
         model: "claude-sonnet-4-6",
         max_tokens: 600,
         system: SYSTEM_PROMPT,
-        messages: Array.isArray(messages) ? messages : [],
+        messages: Array.isArray(messages) && messages.length > 0 ? messages : [{ role: "user", content: "Begin." }],
       }),
     });
 
