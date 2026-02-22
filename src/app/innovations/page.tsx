@@ -17,9 +17,11 @@ const innovations = [
   },
   {
     icon: "🎰",
-    title: "OfficeOdyssey™ Design",
-    desc: "A full workplace design consultancy specializing in casino-style office environments. No clocks. No windows. No visible exits. Employees stay focused because they genuinely cannot find the door. Productivity up 40%.* *Unverified.",
-    type: "conceptual",
+    title: "OfficeOdyssey™",
+    desc: "AI-powered workplace navigation training. You are placed in a simulated casino-style office and asked to find the exit. No clocks. No windows. No visible exits. Success rate is classified.",
+    type: "real",
+    link: "/officeodyssey",
+    linkLabel: "Enter the office →",
   },
   {
     icon: "🤖",
@@ -32,8 +34,10 @@ const innovations = [
   {
     icon: "🪖",
     title: "AgileForce™ Morning Protocol",
-    desc: "Start every workday the NATO way. Our morning obstacle course program gets employees physically and mentally prepared for their 9am standups. Available in Standard, Extreme, and 'We're Being Audited' difficulty settings.",
-    type: "conceptual",
+    desc: "NATO-certified obstacle course simulation. Commands appear on screen — execute them before the timer expires. Available in Standard, Extreme, and 'We're Being Audited' difficulty settings. Results are logged.",
+    type: "real",
+    link: "/agileforce",
+    linkLabel: "Begin Protocol →",
   },
   {
     icon: "🥕",

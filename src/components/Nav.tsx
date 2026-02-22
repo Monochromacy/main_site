@@ -10,7 +10,7 @@ export default function Nav() {
     { href: "/#about", label: "Mission" },
     { href: "/#tweets", label: "Social" },
     { href: "/innovations", label: "Innovations" },
-    { href: "/npcdetect", label: "NPCDetect™" },
+    { href: "/portal", label: "Portal" },
     { href: "/shop", label: "Shop" },
   ];
 

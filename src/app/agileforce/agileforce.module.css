@@ -1,0 +1,601 @@
+/* ── Wrapper ── */
+.wrapper {
+  min-height: 100vh;
+  background: var(--bg);
+  padding-top: 64px;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+}
+
+/* ── Header bar ── */
+.headerBar {
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.logoGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logoIcon {
+  font-size: 1.2rem;
+}
+
+.logoText {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.logoText span {
+  color: var(--accent);
+}
+
+.headerMeta {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.headerRight {
+  min-width: 120px;
+  text-align: right;
+}
+
+.diffBadge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.25rem 0.6rem;
+  background: rgba(200, 181, 96, 0.1);
+}
+
+/* ── Main ── */
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Briefing screen ── */
+.briefingScreen {
+  max-width: 620px;
+  width: 100%;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.briefingEmblem {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.briefingTag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.briefingTitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  letter-spacing: 0.08em;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.briefingTitle span {
+  color: var(--accent);
+}
+
+.briefingSubtitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 2.5rem;
+}
+
+.briefingBody {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 2;
+  color: var(--text-mid);
+  text-align: left;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  padding: 2rem;
+  background: var(--surface);
+}
+
+.briefingBody p + p {
+  margin-top: 1rem;
+}
+
+.disclaimer {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  line-height: 1.8;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  margin-bottom: 2.5rem;
+}
+
+/* ── Difficulty select ── */
+.selectScreen {
+  max-width: 700px;
+  width: 100%;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.selectLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+
+.selectTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2.5rem;
+}
+
+.diffGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 600px) {
+  .diffGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.diffCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.75rem 1.25rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.diffCard:hover {
+  border-color: var(--accent);
+  background: var(--surface2);
+  transform: translateY(-2px);
+}
+
+.diffCardAudited {
+  border-color: var(--danger);
+}
+
+.diffCardAudited:hover {
+  border-color: var(--danger);
+  background: rgba(224, 90, 90, 0.06);
+}
+
+.diffLabel {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.diffSub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.diffStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+/* ── Countdown ── */
+.countdownScreen {
+  text-align: center;
+}
+
+.countdownNumber {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(8rem, 20vw, 16rem);
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  animation: countPulse 0.3s ease-out;
+}
+
+@keyframes countPulse {
+  0% { transform: scale(1.2); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.countdownSub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: -1rem;
+}
+
+/* ── Playing ── */
+.playingScreen {
+  width: 100%;
+  max-width: 560px;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.feedbackHit {
+  background: rgba(90, 184, 126, 0.05);
+}
+
+.feedbackMiss {
+  background: rgba(224, 90, 90, 0.05);
+}
+
+.progressBar {
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.progressLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 2.5rem;
+  text-align: right;
+}
+
+.obstacleCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3rem 2rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.obstacleLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+
+.obstacleCommand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  letter-spacing: 0.05em;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.obstacleSubLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.obstacleInstruction {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  display: inline-block;
+  padding: 0.4rem 1rem;
+}
+
+.timerTrack {
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  margin-bottom: 1.75rem;
+  overflow: hidden;
+}
+
+.timerFill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.016s linear;
+}
+
+.timerDanger {
+  background: var(--danger);
+}
+
+.btnExecute {
+  background: var(--accent);
+  color: var(--black);
+  border: none;
+  padding: 1rem 3.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.1s, transform 0.1s;
+  font-weight: 700;
+  width: 100%;
+}
+
+.btnExecute:active:not(:disabled) {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.btnExecute:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.waitNote {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  background: var(--danger-dim);
+  padding: 0.85rem;
+  width: 100%;
+}
+
+.feedbackLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  animation: feedbackPop 0.35s ease-out forwards;
+}
+
+.feedbackLabelHit {
+  color: var(--green);
+}
+
+.feedbackLabelMiss {
+  color: var(--danger);
+}
+
+@keyframes feedbackPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  40% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ── Results ── */
+.resultsScreen {
+  max-width: 560px;
+  width: 100%;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.resultsTag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1.25rem;
+}
+
+.gradeDisplay {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 0.05em;
+  border: 2px solid;
+  display: inline-block;
+  padding: 0.6rem 2rem;
+  margin-bottom: 1.5rem;
+  line-height: 1;
+}
+
+.resultsTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-mid);
+  margin-bottom: 2.5rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  padding: 1.25rem;
+  border-right: 1px solid var(--border);
+}
+
+.stat:last-child {
+  border-right: none;
+}
+
+.statLabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+}
+
+.statValue {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.2rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.breakdown {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.breakdownPip {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.pipHit {
+  background: var(--green);
+}
+
+.pipMiss {
+  background: var(--danger);
+}
+
+.resultsNote {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  line-height: 1.9;
+  font-style: italic;
+  margin-bottom: 2.5rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.resultsActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* ── Buttons ── */
+.btnPrimary {
+  background: var(--accent);
+  color: var(--black);
+  border: none;
+  padding: 0.85rem 2.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-weight: 700;
+}
+
+.btnPrimary:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.btnGhost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  padding: 0.85rem 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btnGhost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Footer bar ── */
+.footerBar {
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.footerBar a {
+  color: var(--accent);
+  text-decoration: none;
+}
