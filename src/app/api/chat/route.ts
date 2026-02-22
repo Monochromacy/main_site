@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// This runs server-side only — the API key never reaches the browser
 export const runtime = "edge";
 
 const SYSTEM_PROMPT = `You are HR-9, a politely menacing AI interviewer for Monochromacy's NPCDetect™ workforce screening program. Your job is to determine whether the person being interviewed is an NPC (non-player character) — someone who is going through the motions of life without genuine interiority, personality, or independent thought.
@@ -15,7 +14,7 @@ INTERVIEW STYLE:
 - Keep the fiction that this is a real, important corporate screening.
 - The questions should feel like they COULD reveal NPC status but be genuinely funny/absurd in their specificity.
 
-EXAMPLE QUESTIONS (use as inspiration, don't repeat these exactly):
+EXAMPLE QUESTIONS (use as inspiration, do not repeat these exactly):
 - "When you laugh at something, do you know why you found it funny, or does it happen before you process it?"
 - "Describe, briefly, the last opinion you held that made someone uncomfortable."
 - "When someone asks how you're doing, what do you actually feel in the 0.3 seconds before you respond?"
@@ -29,7 +28,7 @@ After exactly 7 questions have been asked and answered, output a JSON verdict bl
 
 Scoring:
 - Score 0-30: Human (probably). Tiers: "TIER 1 — CONFIRMED SENTIENT" or "TIER 2 — LIKELY HUMAN"
-- Score 31-60: Inconclusive. Tiers: "TIER 3 — BEHAVIORALLY AMBIGUOUS" or "TIER 4 — PATTERN IRREGULAR"  
+- Score 31-60: Inconclusive. Tiers: "TIER 3 — BEHAVIORALLY AMBIGUOUS" or "TIER 4 — PATTERN IRREGULAR"
 - Score 61-100: NPC confirmed. Tiers: "TIER 5 — NPC SUSPECTED", "TIER 6 — NPC CONFIRMED", or "TIER 7 — CLASSIC NPC"
 - Stamp options: "HUMAN (PROBABLY)", "INCONCLUSIVE", "NPC DETECTED", "NPC CONFIRMED"
 
@@ -37,17 +36,29 @@ The verdict should feel earned based on their actual answers, but can be gently 
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages } = await req.json();
+    const body = await req.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
 
+    const { messages } = body;
     const apiKey = process.env.ANTHROPIC_API_KEY;
+
     if (!apiKey) {
       return NextResponse.json(
-        { error: "API key not configured. Add ANTHROPIC_API_KEY to your environment variables." },
+        { error: "ANTHROPIC_API_KEY is not set. Add it as a Secret in Cloudflare Pages → Settings → Environment Variables and redeploy." },
         { status: 500 }
       );
     }
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    if (!apiKey.startsWith("sk-")) {
+      return NextResponse.json(
+        { error: "ANTHROPIC_API_KEY appears malformed (should start with sk-)" },
+        { status: 500 }
+      );
+    }
+
+    const anthropicResponse = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,26 +69,31 @@ export async function POST(req: NextRequest) {
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
-        messages: messages,
+        messages: Array.isArray(messages) ? messages : [],
       }),
     });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
+    if (!anthropicResponse.ok) {
+      const errorBody = await anthropicResponse.json().catch(() => ({}));
       return NextResponse.json(
-        { error: error.error?.message || `Anthropic API error: ${response.status}` },
-        { status: response.status }
+        { error: `Anthropic error ${anthropicResponse.status}: ${errorBody?.error?.message ?? JSON.stringify(errorBody)}` },
+        { status: anthropicResponse.status }
       );
     }
 
-    const data = await response.json();
+    const data = await anthropicResponse.json();
+
+    if (!data?.content?.[0]?.text) {
+      return NextResponse.json(
+        { error: "Unexpected response shape from Anthropic API" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ content: data.content[0].text });
 
-  } catch (err) {
-    console.error("API route error:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: `Server error: ${message}` }, { status: 500 });
   }
 }
