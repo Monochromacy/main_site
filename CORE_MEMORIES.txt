@@ -1,0 +1,194 @@
+CORE MEMORIES — MONOCHROMACY SITE
+Last updated: 2026-02-22
+========================================
+Read this first. It will save you 30 minutes of codebase archaeology.
+========================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHAT THIS SITE IS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Monochromacy is a satirical corporate parody site for a fictional company.
+Tagline: "Moving Fast, Breaking Everything. That's the Monochromacy way."
+Self-description: "Fortune 500-Adjacent™"
+
+The premise: a tech company with zero self-awareness, infinite buzzword budget,
+and catastrophically bad leadership that genuinely believes it is visionary.
+The site is entirely deadpan. The company never winks at the camera.
+
+It started as a series of satirical tweets (2020–2024) and grew into a full
+Next.js site with real AI-powered interactive apps.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+THE ORIGIN — 12 FOUNDING TWEETS (verbatim)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+These tweets ARE the lore. The site is a direct expansion of this universe.
+Read all 12 before writing a single word of copy.
+
+Tweet 1:
+  When our employees told us they'd rather continue working remotely than come
+  back to the office, we hired a team of mercenaries to bring them back in
+  anyways.
+  That's the Monochromacy way.
+  #innovation #culture #gamechanging #gamechanger #innovationculture
+
+Tweet 2:
+  Today we announced our org-wide NPC bounty initiative. If an employee can
+  prove that one of their colleagues is an NPC, that employee will receive a
+  week of PTO & a unique Monochromacy NFT.
+  Insecurity, that's the Monochromacy way.
+  #innovation #team #ai #npc #leadership #HR
+
+Tweet 3:
+  We have preemptively leaked all our company's data as part of our 2023 risk
+  mitigation strategy. TIN's, SSN's, EIN's, our Wi-Fi password, the whole deal.
+  Transparency, that's the Monochromacy way.
+  #data #strategy #innovation #leadership #leak #breachprevention #databreach
+
+Tweet 4:
+  To whoever stole our Xerox VersaLink C500 laser printer, we know who you are
+  and we will find you.
+  [No hashtags. The only tweet written with genuine emotion.]
+
+Tweet 5:
+  At Monochromacy, being #agile is a critical part of our business's success.
+  That's why every morning our employees complete a NATO standardized obstacle
+  course before starting the day.
+  That's the Monochromacy way.
+  #agilemindset #agilescrum #agilemethodologies #agileleadership
+
+Tweet 6:
+  Here at Monochromacy.co, our employees come first. That's why once a month
+  each of our team members is allowed to swear under their breath during a
+  client meeting.
+  That's the Monochromacy way.
+  #innovation #employeeperks #employees #workculture #corporateculture
+
+Tweet 7:
+  When we remodeled our office, our contractor asked if we had any specific
+  requirements. We simply said: Make it like a casino. We don't want them to
+  know what time it is or how to get out.
+  That's the Monochromacy way.
+  #officelife #officedesign #officeculture #innovation
+
+Tweet 8:
+  We fired our data engineer. They proposed we use data and analytics to better
+  inform our decision making. But at Monochromacy we know better. Once you give
+  the computers that kind of power, that's how Skynet happens. Not on our watch.
+  #data #skynet #analytics #innovation
+
+Tweet 9:
+  Year to date, 17 of our employees have been thrown under the bus. 9 survived
+  with minor injuries, 6 were considered to be in critical condition and 2 are
+  no longer with us.
+  That's the Monochromacy way.
+  #innovation #teamculture #workplaceculture #monochromacy
+
+Tweet 10:
+  We just sent seven pallets of raw carrots to one of our autoparts
+  manufacturing customers for absolutely no reason at all.
+  Unpredictability, that's the Monochromacy way.
+  #innovation #service #thinkingdifferently #innovationculture #deliver
+
+Tweet 11:
+  At Monochromacy we take our analysis and research to the next level. When we
+  take a deep dive, we mean it literally... we recently purchased a submarine
+  and everything.
+  (We wear sailor outfits, it's fun.)
+  That's the Monochromacy way.
+  #deepdive #analysis #analyze #innovation
+
+Tweet 12:
+  We're ecstatic to announce Shannon Miller will be joining our executive team
+  as our Chief Lasagna Officer. Although her background is in finance, she once
+  was a server at an Olive Garden in South Dakota, and based solely on that
+  factoid alone we were sold!
+  Welcome Shannon!
+  #welcome #welcomeonboard #welcometotheteam #leadershipteam #leadershipculture
+  #leadershipmatters #companygrowth #innovation #newhire
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRAND VOICE RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Deadpan always. The company is completely sincere about everything it says.
+2. Catchphrase: "That's the Monochromacy way." — use to close announcements.
+3. Bad news is presented as a feature: "Transparency, that's the Monochromacy way."
+4. Corporate buzzwords are used unironically: synergy, agility, leverage,
+   paradigm shift, deep dive, circle back, thought leadership.
+5. Employee welfare is an afterthought dressed up as a perk.
+6. The stolen printer is ongoing lore — unresolved, emotional, real.
+7. Shannon Miller is the Chief Lasagna Officer. This is not a joke to them.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Framework:   Next.js 15 / React 19 / TypeScript
+Deployment:  Cloudflare Pages
+AI:          Anthropic Claude via @anthropic-ai/sdk (model: claude-sonnet-4-6)
+Styling:     CSS Modules per component + global CSS variables in globals.css
+Fonts:       Playfair Display, DM Mono, Bebas Neue, IBM Plex Mono, IBM Plex Sans
+
+Build for Cloudflare:  npm run pages:build   (NOT npm run build)
+Local dev:             npm run dev
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+THE APPS (current state)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/                  Homepage — CEO tweets, stats, hero, ticker
+/innovations       Showcase of 6 "products" (3 live, 3 conceptual/vaporware)
+/npcdetect         NPC Detect™ — AI HR interrogation, 7 questions, NPC probability score
+/officeodyssey     Office Odyssey™ — text adventure in casino-style infinite office
+/agileforce        AgileForce™ Morning Protocol — NATO obstacle course reaction game
+/portal            Internal app launcher dashboard (UI only, no real function)
+/shop              Merch placeholder (Shopify integration TODO)
+
+/api/chat          Server-side proxy for NPC Detect → Anthropic API calls
+/api/adventure     Server-side proxy for Office Odyssey → Anthropic API calls
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CODE PATTERNS TO PRESERVE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+API security:
+  - ANTHROPIC_API_KEY lives server-side only (Cloudflare env var)
+  - Never referenced in client components or passed to the browser
+  - All Claude calls go through /api/chat or /api/adventure route handlers
+
+Multi-screen interactive apps:
+  - Use "use client" + useState<Screen> to manage views
+  - Typical flow: boot → interview/game → verdict/result
+  - Examples: npcdetect (boot → interview → verdict),
+              officeodyssey (intro → playing → ending)
+
+AI response parsing:
+  - NPC Detect expects [VERDICT]{...JSON...}[/VERDICT] blocks in AI output
+  - Parsed client-side with regex: text.match(/\[VERDICT\]([\s\S]*?)\[\/VERDICT\]/)
+  - cleanText() strips the verdict block before displaying conversational text
+
+Styling:
+  - CSS variables: --black, --white, --accent (defined in globals.css)
+  - Each route gets its own .module.css file
+  - No CSS frameworks — all custom
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WATCH OUT FOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- README.md is outdated — it only documents the original NPCDetect launch.
+  Do not trust it for route listings or full feature scope.
+- Cloudflare Pages uses a custom build: npm run pages:build
+  Standard `npm run build` output is not what gets deployed.
+- Do not expose ANTHROPIC_API_KEY in any client component or API response.
+- Do not break the CSS variable naming convention (--black, --white, --accent).
+- The AgileForce app has no Anthropic dependency — it's pure client-side logic.
+- The Portal and Shop pages are UI-only placeholders. Don't wire up real logic
+  without explicit instruction.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+THAT'S THE MONOCHROMACY WAY.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
