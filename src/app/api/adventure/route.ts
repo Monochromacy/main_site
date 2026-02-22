@@ -46,7 +46,12 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages } = body;
-    const apiKey = getRequestContext().env.ANTHROPIC_API_KEY as string | undefined;
+    let apiKey: string | undefined;
+    try {
+      apiKey = getRequestContext().env.ANTHROPIC_API_KEY;
+    } catch {
+      apiKey = process.env.ANTHROPIC_API_KEY;
+    }
 
     if (!apiKey) {
       return NextResponse.json(
