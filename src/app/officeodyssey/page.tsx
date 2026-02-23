@@ -98,7 +98,13 @@ export default function OfficeOdyssey() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: msgs }),
     });
-    const data = await res.json();
+    let data: { error?: string; content?: string };
+    try {
+      data = await res.json();
+    } catch {
+      const text = await res.text().catch(() => "(unreadable)");
+      throw new Error(`Server returned non-JSON (HTTP ${res.status}): ${text.slice(0, 300)}`);
+    }
     if (!res.ok) throw new Error(data.error || "API error");
     return data.content as string;
   }
