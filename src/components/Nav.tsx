@@ -48,7 +48,7 @@ export default function Nav() {
                 textTransform: "uppercase",
                 opacity: pathname === link.href ? 1 : 0.7,
                 transition: "all 0.2s",
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "'IBM Plex Mono', monospace",
               }}
             >
               {link.label}
