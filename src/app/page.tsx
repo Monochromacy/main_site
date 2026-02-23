@@ -199,7 +199,7 @@ export default function Home() {
           <div className={styles.footerGrid}>
             <div>
               <span className={styles.footerLogo}>
-                Mono<span>chromacy</span>
+                Monochromacy.
               </span>
               <p className={styles.footerTagline}>
                 We&apos;re a company. We do things. Some of those things are documented here.

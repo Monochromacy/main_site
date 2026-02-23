@@ -433,15 +433,14 @@
 }
 
 .footerLogo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2rem;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
   color: var(--white);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.04em;
   margin-bottom: 1rem;
   display: block;
 }
-
-.footerLogo span { color: var(--accent); }
 
 .footerTagline {
   font-family: 'DM Mono', monospace;

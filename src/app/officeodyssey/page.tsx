@@ -36,7 +36,7 @@ const ENDING_COPY: Record<string, { title: string; icon: string; color: string }
   promotion: {
     title: "Congratulations on Your Promotion",
     icon: "📋",
-    color: "#c8b560",
+    color: "#ffffff",
   },
   printer: {
     title: "You Found It",
