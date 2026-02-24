@@ -1,6 +1,10 @@
 "use client";
 
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import styles from "../deepdive.module.css";
@@ -9,8 +13,8 @@ import styles from "../deepdive.module.css";
 
 const WORLD_LEFT = -7;
 const WORLD_RIGHT = 7;
-const SPAWN_Y = -10; // spawn below visible area
-const DESPAWN_Y = 12; // despawn above visible area
+const SPAWN_Y = -10;
+const DESPAWN_Y = 12;
 
 const COLORS = {
   water: 0x000d1a,
@@ -21,18 +25,17 @@ const COLORS = {
   mineSpike: 0xc04040,
   orb: 0x00ff41,
   orbRare: 0xffdd00,
-  angler: 0x2a4a2a,
+  angler: 0x1a2a1a,
   anglerLure: 0x5ab87e,
   barrier: 0x1a3a5a,
   barrierEdge: 0x00aaff,
-  particle: 0x003322,
 } as const;
 
 const DEPTH_ZONES = [
-  { name: "SURFACE", minDepth: 0, maxDepth: 50, spawnInterval: 3.5, scrollSpeed: 1.5 },
-  { name: "OPERATIONAL", minDepth: 50, maxDepth: 150, spawnInterval: 2.5, scrollSpeed: 2.0 },
-  { name: "STRATEGIC", minDepth: 150, maxDepth: 300, spawnInterval: 1.8, scrollSpeed: 2.8 },
-  { name: "IMMERSION", minDepth: 300, maxDepth: Infinity, spawnInterval: 1.2, scrollSpeed: 3.5 },
+  { name: "SURFACE",     minDepth: 0,   maxDepth: 50,       spawnInterval: 3.5, scrollSpeed: 1.5 },
+  { name: "OPERATIONAL", minDepth: 50,  maxDepth: 150,      spawnInterval: 2.5, scrollSpeed: 2.0 },
+  { name: "STRATEGIC",   minDepth: 150, maxDepth: 300,      spawnInterval: 1.8, scrollSpeed: 2.8 },
+  { name: "IMMERSION",   minDepth: 300, maxDepth: Infinity,  spawnInterval: 1.2, scrollSpeed: 3.5 },
 ] as const;
 
 const BUZZWORDS = [
@@ -50,7 +53,58 @@ const BUZZWORDS = [
   "Data Harvested. Latitude: N/A.",
 ];
 
-const MAX_DEPTH = 600; // cap for depth meter fill at 100%
+const MAX_DEPTH = 600;
+
+// ── Shaders ───────────────────────────────────────────────────────────────────
+
+const CAUSTICS_VERT = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const CAUSTICS_FRAG = `
+  uniform float time;
+  varying vec2 vUv;
+
+  float caustic(vec2 uv, float t) {
+    vec2 p = uv * 8.0;
+    float v = 0.0;
+    v += sin(p.x * 1.3 + t * 0.7 + sin(p.y * 0.9 + t * 0.4)) * 0.5;
+    v += sin(p.y * 1.1 - t * 0.5 + sin(p.x * 1.2 - t * 0.3)) * 0.5;
+    v += sin((p.x + p.y) * 0.9 + t * 0.6) * 0.4;
+    return clamp(v * 0.15 + 0.05, 0.0, 1.0);
+  }
+
+  void main() {
+    float c = caustic(vUv, time);
+    vec3 waterColor = vec3(0.0, 0.04, 0.08);
+    vec3 glowColor  = vec3(0.0, 0.22, 0.13);
+    gl_FragColor = vec4(mix(waterColor, glowColor, c), 1.0);
+  }
+`;
+
+const PARTICLE_VERT = `
+  attribute float phase;
+  uniform float time;
+  varying float vOpacity;
+  void main() {
+    vOpacity = 0.3 + 0.25 * sin(time * 1.5 + phase);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    gl_PointSize = 2.5;
+  }
+`;
+
+const PARTICLE_FRAG = `
+  varying float vOpacity;
+  void main() {
+    float d = length(gl_PointCoord - vec2(0.5));
+    if (d > 0.5) discard;
+    gl_FragColor = vec4(0.0, 0.8, 0.4, vOpacity * (1.0 - d * 1.5));
+  }
+`;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -80,6 +134,7 @@ interface GameState {
   scene: THREE.Scene | null;
   camera: THREE.PerspectiveCamera | null;
   renderer: THREE.WebGLRenderer | null;
+  composer: EffectComposer | null;
   submarine: SubmarineObj | null;
   obstacles: Obstacle[];
   orbs: Orb[];
@@ -103,47 +158,43 @@ type Screen = "intro" | "playing" | "gameover";
 function createSubmarine(): THREE.Group {
   const group = new THREE.Group();
 
-  // Main hull
   const hull = new THREE.Mesh(
     new THREE.BoxGeometry(2.4, 0.65, 0.55),
-    new THREE.MeshLambertMaterial({ color: COLORS.submarine })
+    new THREE.MeshStandardMaterial({ color: COLORS.submarine, metalness: 0.4, roughness: 0.5 })
   );
-  hull.position.y = 0;
   group.add(hull);
 
-  // Conning tower
   const tower = new THREE.Mesh(
     new THREE.BoxGeometry(0.45, 0.45, 0.5),
-    new THREE.MeshLambertMaterial({ color: COLORS.submarine })
+    new THREE.MeshStandardMaterial({ color: COLORS.submarine, metalness: 0.4, roughness: 0.5 })
   );
   tower.position.set(-0.3, 0.55, 0);
   group.add(tower);
 
-  // Periscope
   const periscope = new THREE.Mesh(
     new THREE.BoxGeometry(0.08, 0.35, 0.08),
-    new THREE.MeshLambertMaterial({ color: COLORS.submarineDetail })
+    new THREE.MeshStandardMaterial({ color: COLORS.submarineDetail, metalness: 0.5, roughness: 0.4 })
   );
   periscope.position.set(-0.3, 0.95, 0);
   group.add(periscope);
 
-  // Porthole (green accent circle, approximated with small box)
+  // Glowing porthole
   const porthole = new THREE.Mesh(
     new THREE.BoxGeometry(0.18, 0.18, 0.06),
-    new THREE.MeshBasicMaterial({ color: COLORS.accent })
+    new THREE.MeshStandardMaterial({ color: COLORS.accent, emissive: COLORS.accent, emissiveIntensity: 2.0, roughness: 0.2 })
   );
   porthole.position.set(0.3, 0, 0.29);
   group.add(porthole);
 
-  // Propeller (rear)
+  // Propeller hub (glowing accent)
   const propHub = new THREE.Mesh(
     new THREE.BoxGeometry(0.12, 0.12, 0.12),
-    new THREE.MeshLambertMaterial({ color: COLORS.accent })
+    new THREE.MeshStandardMaterial({ color: COLORS.accent, emissive: COLORS.accent, emissiveIntensity: 1.5, roughness: 0.2 })
   );
   propHub.position.set(-1.3, 0, 0);
   group.add(propHub);
 
-  const bladeMat = new THREE.MeshLambertMaterial({ color: COLORS.accent });
+  const bladeMat = new THREE.MeshStandardMaterial({ color: COLORS.accent, emissive: COLORS.accent, emissiveIntensity: 1.0, roughness: 0.3 });
   const bladeGeo = new THREE.BoxGeometry(0.08, 0.4, 0.04);
   for (let i = 0; i < 3; i++) {
     const blade = new THREE.Mesh(bladeGeo, bladeMat);
@@ -152,10 +203,9 @@ function createSubmarine(): THREE.Group {
     group.add(blade);
   }
 
-  // Nose cone (tapered front using scaled box)
   const nose = new THREE.Mesh(
     new THREE.BoxGeometry(0.3, 0.5, 0.42),
-    new THREE.MeshLambertMaterial({ color: COLORS.submarineDetail })
+    new THREE.MeshStandardMaterial({ color: COLORS.submarineDetail, metalness: 0.5, roughness: 0.4 })
   );
   nose.position.set(1.25, 0, 0);
   group.add(nose);
@@ -167,13 +217,12 @@ function createMine(): THREE.Group {
   const group = new THREE.Group();
 
   const body = new THREE.Mesh(
-    new THREE.SphereGeometry(0.42, 8, 8),
-    new THREE.MeshLambertMaterial({ color: COLORS.mine })
+    new THREE.SphereGeometry(0.42, 10, 10),
+    new THREE.MeshStandardMaterial({ color: COLORS.mine, metalness: 0.3, roughness: 0.6, emissive: 0x330000, emissiveIntensity: 0.4 })
   );
   group.add(body);
 
-  // Spikes
-  const spikeMat = new THREE.MeshLambertMaterial({ color: COLORS.mineSpike });
+  const spikeMat = new THREE.MeshStandardMaterial({ color: COLORS.mineSpike, metalness: 0.5, roughness: 0.5 });
   const spikeGeo = new THREE.BoxGeometry(0.08, 0.3, 0.08);
   const spikeOffsets = [
     [0, 0.52, 0], [0, -0.52, 0], [0.52, 0, 0], [-0.52, 0, 0],
@@ -193,43 +242,28 @@ function createBarrier(gapX: number): THREE.Group {
   const group = new THREE.Group();
 
   const gapHalfWidth = 1.6;
-  const totalWidth = WORLD_RIGHT - WORLD_LEFT; // 14
   const leftWidth = (gapX - WORLD_LEFT) - gapHalfWidth;
   const rightWidth = (WORLD_RIGHT - gapX) - gapHalfWidth;
 
-  const mat = new THREE.MeshLambertMaterial({ color: COLORS.barrier });
-  const edgeMat = new THREE.MeshBasicMaterial({ color: COLORS.barrierEdge });
+  const mat = new THREE.MeshStandardMaterial({ color: COLORS.barrier, metalness: 0.6, roughness: 0.3, emissive: 0x001122 });
+  const edgeMat = new THREE.MeshStandardMaterial({ color: COLORS.barrierEdge, emissive: COLORS.barrierEdge, emissiveIntensity: 1.2, roughness: 0.2 });
 
   if (leftWidth > 0) {
-    const leftPanel = new THREE.Mesh(
-      new THREE.BoxGeometry(leftWidth, 0.35, 0.5),
-      mat
-    );
+    const leftPanel = new THREE.Mesh(new THREE.BoxGeometry(leftWidth, 0.35, 0.5), mat);
     leftPanel.position.x = WORLD_LEFT + leftWidth / 2;
     group.add(leftPanel);
 
-    // Edge glow
-    const leftEdge = new THREE.Mesh(
-      new THREE.BoxGeometry(0.06, 0.36, 0.52),
-      edgeMat
-    );
+    const leftEdge = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.36, 0.52), edgeMat);
     leftEdge.position.x = WORLD_LEFT + leftWidth;
     group.add(leftEdge);
   }
 
   if (rightWidth > 0) {
-    const rightPanel = new THREE.Mesh(
-      new THREE.BoxGeometry(rightWidth, 0.35, 0.5),
-      mat
-    );
+    const rightPanel = new THREE.Mesh(new THREE.BoxGeometry(rightWidth, 0.35, 0.5), mat);
     rightPanel.position.x = WORLD_RIGHT - rightWidth / 2;
     group.add(rightPanel);
 
-    // Edge glow
-    const rightEdge = new THREE.Mesh(
-      new THREE.BoxGeometry(0.06, 0.36, 0.52),
-      edgeMat
-    );
+    const rightEdge = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.36, 0.52), edgeMat);
     rightEdge.position.x = WORLD_RIGHT - rightWidth;
     group.add(rightEdge);
   }
@@ -240,50 +274,42 @@ function createBarrier(gapX: number): THREE.Group {
 function createAnglerfish(): THREE.Group {
   const group = new THREE.Group();
 
-  // Body
   const body = new THREE.Mesh(
     new THREE.BoxGeometry(1.1, 0.7, 0.5),
-    new THREE.MeshLambertMaterial({ color: COLORS.angler })
+    new THREE.MeshStandardMaterial({ color: COLORS.angler, metalness: 0.1, roughness: 0.9 })
   );
   group.add(body);
 
-  // Jaw
   const jaw = new THREE.Mesh(
     new THREE.BoxGeometry(0.7, 0.2, 0.45),
-    new THREE.MeshLambertMaterial({ color: COLORS.angler })
+    new THREE.MeshStandardMaterial({ color: COLORS.angler, metalness: 0.1, roughness: 0.9 })
   );
   jaw.position.set(0.4, -0.35, 0);
   group.add(jaw);
 
-  // Teeth (white spikes)
-  const toothMat = new THREE.MeshLambertMaterial({ color: 0xe8e6e0 });
+  const toothMat = new THREE.MeshStandardMaterial({ color: 0xe8e6e0, metalness: 0.1, roughness: 0.7 });
   for (let i = 0; i < 4; i++) {
-    const tooth = new THREE.Mesh(
-      new THREE.BoxGeometry(0.07, 0.15, 0.07),
-      toothMat
-    );
+    const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.15, 0.07), toothMat);
     tooth.position.set(0.12 + i * 0.16, -0.28, 0);
     group.add(tooth);
   }
 
-  // Lure wire
   const wire = new THREE.Mesh(
     new THREE.BoxGeometry(0.04, 0.6, 0.04),
-    new THREE.MeshBasicMaterial({ color: COLORS.anglerLure })
+    new THREE.MeshStandardMaterial({ color: COLORS.anglerLure, emissive: COLORS.anglerLure, emissiveIntensity: 0.6, roughness: 0.5 })
   );
   wire.position.set(0.35, 0.65, 0);
   group.add(wire);
 
-  // Lure bulb (glowing)
+  // Glowing lure bulb
   const lure = new THREE.Mesh(
-    new THREE.SphereGeometry(0.12, 8, 8),
-    new THREE.MeshBasicMaterial({ color: COLORS.anglerLure })
+    new THREE.SphereGeometry(0.12, 10, 10),
+    new THREE.MeshStandardMaterial({ color: COLORS.anglerLure, emissive: COLORS.anglerLure, emissiveIntensity: 2.5, roughness: 0.1 })
   );
   lure.position.set(0.35, 1.0, 0);
   group.add(lure);
 
-  // Point light for lure glow
-  const light = new THREE.PointLight(COLORS.anglerLure, 2, 4);
+  const light = new THREE.PointLight(COLORS.anglerLure, 3, 5);
   light.position.set(0.35, 1.0, 0);
   group.add(light);
 
@@ -293,19 +319,27 @@ function createAnglerfish(): THREE.Group {
 function createParticles(): { points: THREE.Points; positions: Float32Array } {
   const count = 150;
   const positions = new Float32Array(count * 3);
+  const phases = new Float32Array(count);
   for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 20;
+    positions[i * 3]     = (Math.random() - 0.5) * 20;
     positions[i * 3 + 1] = (Math.random() - 0.5) * 24;
     positions[i * 3 + 2] = (Math.random() - 0.5) * 4 - 2;
+    phases[i] = Math.random() * Math.PI * 2;
   }
+
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  const mat = new THREE.PointsMaterial({
-    color: COLORS.particle,
-    size: 0.12,
+  geo.setAttribute("phase", new THREE.BufferAttribute(phases, 1));
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { time: { value: 0 } },
+    vertexShader: PARTICLE_VERT,
+    fragmentShader: PARTICLE_FRAG,
     transparent: true,
-    opacity: 0.6,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
   });
+
   return { points: new THREE.Points(geo, mat), positions };
 }
 
@@ -318,6 +352,7 @@ export default function DeepDiveGame() {
     scene: null,
     camera: null,
     renderer: null,
+    composer: null,
     submarine: null,
     obstacles: [],
     orbs: [],
@@ -336,6 +371,7 @@ export default function DeepDiveGame() {
   const animFrameRef = useRef<number>(0);
   const flashIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const keysRef = useRef<Set<string>>(new Set());
+  const causticsMatRef = useRef<THREE.ShaderMaterial | null>(null);
 
   // React UI state
   const [score, setScore] = useState(0);
@@ -353,11 +389,7 @@ export default function DeepDiveGame() {
   const onGameOver = useRef<(finalScore: number, finalDepth: number) => void>(() => {});
 
   useEffect(() => {
-    onScoreUpdate.current = (s, d, z) => {
-      setScore(s);
-      setDepth(d);
-      setZoneName(z);
-    };
+    onScoreUpdate.current = (s, d, z) => { setScore(s); setDepth(d); setZoneName(z); };
     onLivesUpdate.current = (l) => setLives(l);
     onBuzzwordTrigger.current = (w) => {
       setBuzzword(null);
@@ -383,7 +415,7 @@ export default function DeepDiveGame() {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(COLORS.water);
-    scene.fog = new THREE.Fog(COLORS.water, 18, 40);
+    scene.fog = new THREE.FogExp2(COLORS.water, 0.035);
     gs.scene = scene;
 
     const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
@@ -394,46 +426,74 @@ export default function DeepDiveGame() {
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(w, h);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
     gs.renderer = renderer;
 
-    // Lighting
-    const ambient = new THREE.AmbientLight(0x224466, 0.8);
+    // ── Post-processing ──────────────────────────────────────────────────────
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(w, h),
+      0.9,   // strength
+      0.4,   // radius
+      0.55   // threshold — only bright emissive elements glow
+    );
+    composer.addPass(bloomPass);
+    composer.addPass(new OutputPass());
+    gs.composer = composer;
+
+    // ── Lighting ─────────────────────────────────────────────────────────────
+    // Deep ocean ambient — very dark blue
+    const ambient = new THREE.AmbientLight(0x0a1a2a, 1.2);
     scene.add(ambient);
-    const dirLight = new THREE.DirectionalLight(0x00ff41, 0.3);
-    dirLight.position.set(5, 10, 8);
+
+    // Main directional light — cool blue-green from above
+    const dirLight = new THREE.DirectionalLight(0x00ccaa, 0.6);
+    dirLight.position.set(2, 8, 6);
     scene.add(dirLight);
 
-    // Background water plane (slightly behind gameplay)
-    const bgPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(40, 40),
-      new THREE.MeshBasicMaterial({ color: 0x000810 })
-    );
+    // Secondary directional — subtle bioluminescent bounce from below
+    const bottomLight = new THREE.DirectionalLight(0x003322, 0.3);
+    bottomLight.position.set(0, -5, 2);
+    scene.add(bottomLight);
+
+    // ── Caustic background plane ──────────────────────────────────────────────
+    const causticsMat = new THREE.ShaderMaterial({
+      uniforms: { time: { value: 0 } },
+      vertexShader: CAUSTICS_VERT,
+      fragmentShader: CAUSTICS_FRAG,
+    });
+    causticsMatRef.current = causticsMat;
+
+    const bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), causticsMat);
     bgPlane.position.z = -3;
     scene.add(bgPlane);
 
-    // Bioluminescent particles
+    // ── Bioluminescent particles ──────────────────────────────────────────────
     const { points, positions } = createParticles();
     scene.add(points);
     gs.particles = points;
     gs.particlePositions = positions;
 
+    // ── Resize ────────────────────────────────────────────────────────────────
     const onResize = () => {
       const cw = container.clientWidth;
       const ch = container.clientHeight;
       camera.aspect = cw / ch;
       camera.updateProjectionMatrix();
       renderer.setSize(cw, ch);
+      composer.setSize(cw, ch);
     };
     window.addEventListener("resize", onResize);
-
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
   // ── Zone helper ────────────────────────────────────────────────────────────
 
-  function getZone(depth: number) {
+  function getZone(d: number) {
     for (const zone of DEPTH_ZONES) {
-      if (depth < zone.maxDepth) return zone;
+      if (d < zone.maxDepth) return zone;
     }
     return DEPTH_ZONES[DEPTH_ZONES.length - 1];
   }
@@ -442,10 +502,8 @@ export default function DeepDiveGame() {
 
   const spawnObstacle = useCallback((gs: GameState) => {
     const scene = gs.scene!;
-    const zone = getZone(gs.depth);
-    const zoneName = zone.name;
+    const zoneName = getZone(gs.depth).name;
 
-    // Pick obstacle type based on depth zone
     let type: "mine" | "barrier" | "angler";
     const roll = Math.random();
     if (zoneName === "SURFACE") {
@@ -453,13 +511,9 @@ export default function DeepDiveGame() {
     } else if (zoneName === "OPERATIONAL") {
       type = roll < 0.6 ? "mine" : "barrier";
     } else if (zoneName === "STRATEGIC") {
-      if (roll < 0.4) type = "mine";
-      else if (roll < 0.7) type = "barrier";
-      else type = "angler";
+      type = roll < 0.4 ? "mine" : roll < 0.7 ? "barrier" : "angler";
     } else {
-      if (roll < 0.35) type = "mine";
-      else if (roll < 0.65) type = "barrier";
-      else type = "angler";
+      type = roll < 0.35 ? "mine" : roll < 0.65 ? "barrier" : "angler";
     }
 
     let group: THREE.Group;
@@ -476,10 +530,9 @@ export default function DeepDiveGame() {
       group.position.set(0, SPAWN_Y, 0);
     } else {
       group = createAnglerfish();
-      // Anglerfish appear on left or right side, facing inward
       const side = Math.random() > 0.5 ? 1 : -1;
       group.position.set(side * (4 + Math.random() * 2), SPAWN_Y, 0);
-      group.scale.x = side; // flip if right side
+      group.scale.x = side;
     }
 
     scene.add(group);
@@ -492,8 +545,13 @@ export default function DeepDiveGame() {
     const value = rare ? 50 : gs.depth >= 50 ? 25 : 10;
 
     const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.28, 10, 10),
-      new THREE.MeshBasicMaterial({ color: rare ? COLORS.orbRare : COLORS.orb })
+      new THREE.SphereGeometry(0.28, 12, 12),
+      new THREE.MeshStandardMaterial({
+        color: rare ? COLORS.orbRare : COLORS.orb,
+        emissive: rare ? COLORS.orbRare : COLORS.orb,
+        emissiveIntensity: 1.5,
+        roughness: 0.2,
+      })
     );
     mesh.position.set(
       WORLD_LEFT + 1.5 + Math.random() * (WORLD_RIGHT - WORLD_LEFT - 3),
@@ -518,20 +576,22 @@ export default function DeepDiveGame() {
     if (!gs.particles || !gs.particlePositions) return;
     const pos = gs.particlePositions;
     for (let i = 0; i < pos.length / 3; i++) {
-      pos[i * 3 + 1] += delta * 0.4; // drift upward slowly
+      pos[i * 3 + 1] += delta * 0.4;
       if (pos[i * 3 + 1] > 12) {
         pos[i * 3 + 1] = -12;
         pos[i * 3] = (Math.random() - 0.5) * 20;
       }
     }
     (gs.particles.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+    // Update time uniform for pulsing
+    const mat = gs.particles.material as THREE.ShaderMaterial;
+    mat.uniforms.time.value += delta;
   }, []);
 
   const updateSubmarine = useCallback((gs: GameState, delta: number) => {
     if (!gs.submarine) return;
     const sub = gs.submarine;
 
-    // Horizontal input
     const moveSpeed = 8;
     if (keysRef.current.has("ArrowLeft") || keysRef.current.has("a") || keysRef.current.has("A")) {
       sub.targetX = Math.max(WORLD_LEFT + 1.5, sub.targetX - moveSpeed * delta);
@@ -543,11 +603,10 @@ export default function DeepDiveGame() {
     sub.x += (sub.targetX - sub.x) * 10 * delta;
     sub.group.position.x = sub.x;
 
-    // Propeller spin effect (rotate propeller blades - children 5,6,7)
-    const propSpeed = 8;
+    // Spin propeller blades (children 5, 6, 7)
     for (let i = 5; i <= 7; i++) {
       const blade = sub.group.children[i];
-      if (blade) blade.rotation.x += propSpeed * delta;
+      if (blade) blade.rotation.x += 8 * delta;
     }
 
     if (gs.invincibleTimer > 0) {
@@ -592,24 +651,19 @@ export default function DeepDiveGame() {
   const checkCollisions = useCallback((gs: GameState) => {
     if (!gs.submarine || gs.submarine.invincible) return;
     const subBox = new THREE.Box3().setFromObject(gs.submarine.group);
-    // Shrink hitbox slightly for fairness
     subBox.min.addScalar(0.2);
     subBox.max.addScalar(-0.2);
 
-    // Orbs
     for (const orb of gs.orbs) {
       if (orb.disposed) continue;
-      const orbBox = new THREE.Box3().setFromObject(orb.mesh);
-      if (subBox.intersectsBox(orbBox)) {
+      if (subBox.intersectsBox(new THREE.Box3().setFromObject(orb.mesh))) {
         handleOrbCollect(gs, orb);
       }
     }
 
-    // Obstacles
     for (const obs of gs.obstacles) {
       if (obs.disposed) continue;
-      const obsBox = new THREE.Box3().setFromObject(obs.group);
-      if (subBox.intersectsBox(obsBox)) {
+      if (subBox.intersectsBox(new THREE.Box3().setFromObject(obs.group))) {
         handleObstacleHit(gs);
         return;
       }
@@ -620,11 +674,14 @@ export default function DeepDiveGame() {
     const zone = getZone(gs.depth);
     const scrollSpeed = zone.scrollSpeed;
 
-    // Depth increases with scroll
     gs.depth += scrollSpeed * delta * 2.5;
     gs.scrollY += scrollSpeed * delta;
 
-    // Move all obstacles and orbs upward
+    // Advance caustics shader time
+    if (causticsMatRef.current) {
+      causticsMatRef.current.uniforms.time.value += delta;
+    }
+
     for (const obs of gs.obstacles) {
       if (obs.disposed) continue;
       obs.group.position.y += scrollSpeed * delta;
@@ -632,15 +689,14 @@ export default function DeepDiveGame() {
       if (obs.worldY > DESPAWN_Y) {
         gs.scene!.remove(obs.group);
         obs.disposed = true;
+        continue;
       }
-      // Rotate mines slowly
       if (obs.type === "mine") {
         obs.group.rotation.z += delta * 0.5;
       }
-      // Bob anglerfish lure
       if (obs.type === "angler") {
-        const lure = obs.group.children[obs.group.children.length - 1];
-        if (lure) lure.position.y = Math.sin(Date.now() * 0.003) * 0.15;
+        const lure = obs.group.children[obs.group.children.length - 2]; // mesh
+        if (lure) (lure as THREE.Mesh).position.y = 1.0 + Math.sin(Date.now() * 0.003) * 0.15;
       }
     }
     gs.obstacles = gs.obstacles.filter((o) => !o.disposed);
@@ -649,7 +705,6 @@ export default function DeepDiveGame() {
       if (orb.disposed) continue;
       orb.mesh.position.y += scrollSpeed * delta;
       orb.worldY += scrollSpeed * delta;
-      // Pulsate orb scale
       const pulse = 1 + Math.sin(Date.now() * 0.005) * 0.1;
       orb.mesh.scale.setScalar(pulse);
       if (orb.worldY > DESPAWN_Y) {
@@ -659,7 +714,6 @@ export default function DeepDiveGame() {
     }
     gs.orbs = gs.orbs.filter((o) => !o.disposed);
 
-    // Spawner
     gs.spawnTimer += delta;
     if (gs.spawnTimer >= zone.spawnInterval) {
       gs.spawnTimer = 0;
@@ -672,9 +726,7 @@ export default function DeepDiveGame() {
       spawnOrb(gs);
     }
 
-    // Update score with passive depth points
     gs.score += Math.floor(scrollSpeed * delta);
-
     const newZone = getZone(gs.depth);
     onScoreUpdate.current(gs.score, Math.floor(gs.depth), newZone.name);
   }, [spawnObstacle, spawnOrb]);
@@ -698,7 +750,7 @@ export default function DeepDiveGame() {
     gs.lives = 3;
     gs.gamePhase = "playing";
     gs.lastTime = 0;
-    gs.spawnTimer = 2.0; // delay first obstacle slightly
+    gs.spawnTimer = 2.0;
     gs.orbSpawnTimer = 1.0;
     gs.scrollY = 0;
     gs.invincibleTimer = 0;
@@ -720,13 +772,11 @@ export default function DeepDiveGame() {
     const cleanupResize = initScene();
     const gs = gameStateRef.current;
 
-    if (gs.renderer && gs.scene && gs.camera) {
-      gs.renderer.render(gs.scene, gs.camera);
-    }
+    if (gs.composer) gs.composer.render();
 
     function tick(timestamp: number) {
       const g = gameStateRef.current;
-      if (!g.renderer || !g.scene || !g.camera) return;
+      if (!g.composer || !g.scene || !g.camera) return;
 
       const delta = g.lastTime === 0 ? 0 : Math.min((timestamp - g.lastTime) / 1000, 0.1);
       g.lastTime = timestamp;
@@ -736,9 +786,15 @@ export default function DeepDiveGame() {
         updateSubmarine(g, delta);
         updateParticles(g, delta);
         checkCollisions(g);
+      } else {
+        // Keep caustics animating on intro/gameover screens
+        if (causticsMatRef.current) {
+          causticsMatRef.current.uniforms.time.value += delta;
+        }
+        updateParticles(g, delta);
       }
 
-      g.renderer.render(g.scene, g.camera);
+      g.composer.render();
       animFrameRef.current = requestAnimationFrame(tick);
     }
 
@@ -780,22 +836,14 @@ export default function DeepDiveGame() {
     };
   }, [screen]);
 
-  // ── Mobile input helpers ───────────────────────────────────────────────────
+  // ── Mobile input ───────────────────────────────────────────────────────────
 
-  const holdLeft = useCallback(() => {
-    keysRef.current.add("ArrowLeft");
-  }, []);
-  const holdRight = useCallback(() => {
-    keysRef.current.add("ArrowRight");
-  }, []);
-  const releaseLeft = useCallback(() => {
-    keysRef.current.delete("ArrowLeft");
-  }, []);
-  const releaseRight = useCallback(() => {
-    keysRef.current.delete("ArrowRight");
-  }, []);
+  const holdLeft    = useCallback(() => keysRef.current.add("ArrowLeft"), []);
+  const holdRight   = useCallback(() => keysRef.current.add("ArrowRight"), []);
+  const releaseLeft  = useCallback(() => keysRef.current.delete("ArrowLeft"), []);
+  const releaseRight = useCallback(() => keysRef.current.delete("ArrowRight"), []);
 
-  // ── Verdict & zone ─────────────────────────────────────────────────────────
+  // ── Verdict ────────────────────────────────────────────────────────────────
 
   function getVerdict(d: number) {
     if (d >= 300)
@@ -811,24 +859,19 @@ export default function DeepDiveGame() {
 
   return (
     <div className={styles.gameContainer}>
-      {/* Header bar */}
+      {/* Header */}
       <div className={styles.headerBar}>
         <div className={styles.logoGroup}>
           <span className={styles.logoText}>
             Deep Dive<span>™</span>
           </span>
-          <span className={styles.headerMeta}>
-            Analytics Division
-          </span>
+          <span className={styles.headerMeta}>Analytics Division</span>
         </div>
         <div className={styles.o2Display}>
           <span>O₂</span>
           <div className={styles.tanks}>
             {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className={`${styles.o2Tank} ${i >= lives ? styles.o2TankLost : ""}`}
-              >
+              <span key={i} className={`${styles.o2Tank} ${i >= lives ? styles.o2TankLost : ""}`}>
                 ◈
               </span>
             ))}
@@ -836,7 +879,7 @@ export default function DeepDiveGame() {
         </div>
       </div>
 
-      {/* Canvas area */}
+      {/* Canvas */}
       <div className={styles.canvasWrapper} ref={containerRef}>
         <canvas ref={canvasRef} className={styles.canvas} />
 
@@ -844,10 +887,7 @@ export default function DeepDiveGame() {
         {screen === "playing" && (
           <>
             <div className={styles.depthMeterWrap}>
-              <div
-                className={styles.depthMeterFill}
-                style={{ height: `${depthFillPct}%` }}
-              />
+              <div className={styles.depthMeterFill} style={{ height: `${depthFillPct}%` }} />
             </div>
             <div className={styles.depthZoneLabel}>{zoneName}</div>
           </>
@@ -857,9 +897,7 @@ export default function DeepDiveGame() {
         {screen === "intro" && (
           <div className={styles.overlay}>
             <div className={styles.introScreen}>
-              <p className={styles.introTag}>
-                Monochromacy · Analytics Division
-              </p>
+              <p className={styles.introTag}>Monochromacy · Analytics Division</p>
               <h1 className={styles.introTitle}>
                 Deep Dive<span>™</span>
               </h1>
@@ -898,28 +936,16 @@ export default function DeepDiveGame() {
           <div className={styles.overlay}>
             <div className={styles.gameOverScreen}>
               <p className={styles.gameOverTag}>Surface Breach Detected</p>
-              <h2 className={styles.gameOverTitle}>
-                Ascent Involuntary
-              </h2>
-              <div className={styles.gameOverScore}>
-                {score.toLocaleString()}
-              </div>
-              <p className={styles.gameOverScoreLabel}>
-                Insight Units Recovered
-              </p>
+              <h2 className={styles.gameOverTitle}>Ascent Involuntary</h2>
+              <div className={styles.gameOverScore}>{score.toLocaleString()}</div>
+              <p className={styles.gameOverScoreLabel}>Insight Units Recovered</p>
               <p className={styles.gameOverDepth}>
                 Max Depth: {finalDepth}m — {getZone(finalDepth).name}
               </p>
-              <div className={styles.gameOverVerdict}>
-                {getVerdict(finalDepth)}
-              </div>
+              <div className={styles.gameOverVerdict}>{getVerdict(finalDepth)}</div>
               <div className={styles.gameOverActions}>
-                <button className={styles.btnPrimary} onClick={startGame}>
-                  Re-Deploy
-                </button>
-                <Link href="/portal" className={styles.btnGhost}>
-                  Return to Portal
-                </Link>
+                <button className={styles.btnPrimary} onClick={startGame}>Re-Deploy</button>
+                <Link href="/portal" className={styles.btnGhost}>Return to Portal</Link>
               </div>
             </div>
           </div>
@@ -933,7 +959,7 @@ export default function DeepDiveGame() {
         )}
       </div>
 
-      {/* Mobile touch controls */}
+      {/* Mobile controls */}
       {screen === "playing" && (
         <div className={styles.touchControls}>
           <button
@@ -978,9 +1004,7 @@ export default function DeepDiveGame() {
 
       {/* Footer */}
       <div className={styles.footerBar}>
-        <span>
-          Deep Dive™ · Analytics Division · All findings are property of Monochromacy
-        </span>
+        <span>Deep Dive™ · Analytics Division · All findings are property of Monochromacy</span>
         <Link href="/portal" style={{ color: "var(--accent)", textDecoration: "none" }}>
           ← Portal
         </Link>
