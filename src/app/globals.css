@@ -17,9 +17,9 @@
   --surface2: #0a1a0a;
   --border: rgba(0, 255, 65, 0.15);
   --border-active: #00ff41;
-  --text: #00ff41;
-  --text-dim: rgba(0, 255, 65, 0.4);
-  --text-mid: rgba(0, 255, 65, 0.65);
+  --text: #e8e6e0;
+  --text-dim: rgba(232, 230, 224, 0.4);
+  --text-mid: rgba(232, 230, 224, 0.65);
   --danger: #e05a5a;
   --danger-dim: rgba(224, 90, 90, 0.1);
   --green: #5ab87e;
@@ -33,10 +33,9 @@ html {
 
 body {
   background: var(--black);
-  color: var(--accent);
+  color: var(--white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
 }
 
 /* CRT scanline overlay */

@@ -63,14 +63,14 @@ export default function Innovations() {
               <h1 style={{
                 fontFamily: "'IBM Plex Mono', monospace",
                 fontSize: "clamp(2rem, 3.5vw, 3.5rem)", fontWeight: 700, lineHeight: 1.15,
-                color: "var(--accent)"
+                color: "var(--white)"
               }}>
-                Products that <em style={{ fontStyle: "normal", color: "rgba(0,255,65,0.65)" }}>change</em><br />the game.
+                Products that <em style={{ fontStyle: "normal", color: "var(--accent)" }}>change</em><br />the game.
               </h1>
             </div>
             <p style={{
               fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: "0.82rem", lineHeight: 2, color: "rgba(0,255,65,0.55)", paddingTop: "0.5rem"
+              fontSize: "0.82rem", lineHeight: 2, color: "rgba(232,230,224,0.6)", paddingTop: "0.5rem"
             }}>
               Our innovation pipeline is constantly evolving. Some of what we&apos;ve built is real.
               Some of it exists only in the Monochromacy Ideation Metaspace™.
@@ -119,11 +119,11 @@ export default function Innovations() {
                   <h3 style={{
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: "1rem", fontWeight: 700, marginBottom: "0.75rem",
-                    color: "var(--accent)"
+                    color: "var(--white)"
                   }}>{item.title}</h3>
                   <p style={{
                     fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: "0.75rem", lineHeight: 1.8, color: "rgba(0,255,65,0.55)"
+                    fontSize: "0.75rem", lineHeight: 1.8, color: "rgba(232,230,224,0.55)"
                   }}>{item.desc}</p>
                   {item.link && (
                     <a href={item.link} style={{

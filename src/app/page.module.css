@@ -29,7 +29,7 @@
   font-size: clamp(2.4rem, 4.5vw, 4.8rem);
   font-weight: 700;
   line-height: 1.05;
-  color: var(--accent);
+  color: var(--white);
   margin-bottom: 2rem;
 }
 
@@ -37,14 +37,13 @@
   font-style: normal;
   color: var(--accent);
   display: block;
-  opacity: 0.75;
 }
 
 .heroSub {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.8rem;
   line-height: 1.8;
-  color: rgba(0, 255, 65, 0.5);
+  color: rgba(232, 230, 224, 0.55);
   max-width: 420px;
   margin-bottom: 3rem;
 }
@@ -148,7 +147,7 @@
 .badgeSub {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.6rem;
-  color: rgba(0, 255, 65, 0.45);
+  color: rgba(232, 230, 224, 0.4);
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
@@ -229,12 +228,12 @@
   font-size: clamp(2rem, 3.5vw, 3.5rem);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--accent);
+  color: var(--white);
 }
 
 .missionHeadline em {
   font-style: normal;
-  color: rgba(0, 255, 65, 0.65);
+  color: var(--accent);
 }
 
 .divider {
@@ -249,7 +248,7 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.82rem;
   line-height: 2;
-  color: rgba(0, 255, 65, 0.6);
+  color: rgba(232, 230, 224, 0.65);
   margin-top: 1rem;
 }
 
@@ -303,7 +302,7 @@
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(0, 255, 65, 0.5);
+  color: rgba(232, 230, 224, 0.45);
   margin-top: 0.5rem;
 }
 
@@ -334,14 +333,14 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: clamp(1.8rem, 3vw, 3rem);
   font-weight: 700;
-  color: var(--accent);
+  color: var(--white);
   max-width: 500px;
   line-height: 1.2;
 }
 
 .tweetsHeadline em {
   font-style: normal;
-  color: rgba(0, 255, 65, 0.6);
+  color: var(--accent);
 }
 
 .socialLinks { display: flex; gap: 1rem; }
@@ -418,18 +417,18 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--white);
 }
 
 .tweetHandle {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
-  color: rgba(0, 255, 65, 0.45);
+  color: rgba(232, 230, 224, 0.35);
 }
 
 .tweetPlatform {
   font-size: 0.8rem;
-  color: rgba(0, 255, 65, 0.3);
+  color: rgba(232, 230, 224, 0.25);
   text-shadow: none;
 }
 
@@ -437,14 +436,14 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.82rem;
   line-height: 1.75;
-  color: rgba(0, 255, 65, 0.85);
+  color: rgba(232, 230, 224, 0.85);
 }
 
 .tweetTags {
   margin-top: 1rem;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
-  color: rgba(0, 255, 65, 0.4);
+  color: rgba(232, 230, 224, 0.3);
   line-height: 1.8;
 }
 
@@ -476,7 +475,7 @@
 .footerTagline {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.75rem;
-  color: rgba(0, 255, 65, 0.35);
+  color: rgba(232, 230, 224, 0.35);
   line-height: 1.8;
   max-width: 320px;
 }
@@ -499,12 +498,12 @@
 .footerLinks a {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.78rem;
-  color: rgba(0, 255, 65, 0.45);
+  color: rgba(232, 230, 224, 0.45);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.footerLinks a:hover { color: var(--accent); }
+.footerLinks a:hover { color: var(--white); }
 
 .footerBottom {
   border-top: 1px solid rgba(0, 255, 65, 0.08);
@@ -517,7 +516,7 @@
 .footerCopy {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
-  color: rgba(0, 255, 65, 0.3);
+  color: rgba(232, 230, 224, 0.3);
 }
 
 .footerSocial { display: flex; gap: 1rem; }
@@ -525,13 +524,13 @@
 .footerSocial a {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
-  color: rgba(0, 255, 65, 0.35);
+  color: rgba(232, 230, 224, 0.35);
   text-decoration: none;
   letter-spacing: 0.1em;
   transition: color 0.2s;
 }
 
-.footerSocial a:hover { color: var(--accent); }
+.footerSocial a:hover { color: var(--white); }
 
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; }

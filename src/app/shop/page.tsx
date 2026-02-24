@@ -43,14 +43,14 @@ export default function Shop() {
         <h1 style={{
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: "clamp(2rem, 4vw, 4rem)", fontWeight: 700,
-          color: "var(--accent)", lineHeight: 1.1, marginBottom: "1.5rem"
+          color: "var(--white)", lineHeight: 1.1, marginBottom: "1.5rem"
         }}>
-          Wear the <em style={{ fontStyle: "normal", color: "rgba(0,255,65,0.6)" }}>Way.</em><span className="cursor"> _</span>
+          Wear the <em style={{ fontStyle: "normal", color: "var(--accent)" }}>Way.</em><span className="cursor"> _</span>
         </h1>
 
         <p style={{
           fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: "0.82rem", color: "rgba(0,255,65,0.5)",
+          fontSize: "0.82rem", color: "rgba(232,230,224,0.55)",
           maxWidth: "500px", margin: "0 auto 3rem", lineHeight: 1.8
         }}>
           Soon, you&apos;ll be able to represent Monochromacy in your daily life — at the office,
@@ -93,7 +93,7 @@ export default function Shop() {
               <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>{item.icon}</div>
               <p style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: "0.82rem", fontWeight: 700, color: "var(--accent)", marginBottom: "0.5rem"
+                fontSize: "0.82rem", fontWeight: 700, color: "var(--white)", marginBottom: "0.5rem"
               }}>{item.name}</p>
               <p style={{
                 fontFamily: "'IBM Plex Mono', monospace",
