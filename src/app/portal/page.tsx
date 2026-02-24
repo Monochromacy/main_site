@@ -89,10 +89,10 @@ const APPS: AppDef[] = [
     icon: "🚌",
     name: "Under the Bus™",
     dept: "Talent Management",
-    status: "Q4",
+    status: "LIVE",
     desc: "Interactive workforce accountability simulation. 17 sessions completed YTD. 9 participants survived with minor injuries. 2 are no longer with us.",
-    link: null,
-    version: null,
+    link: "/underbus",
+    version: "v1.0",
     tag: "Simulation",
   },
 ];
