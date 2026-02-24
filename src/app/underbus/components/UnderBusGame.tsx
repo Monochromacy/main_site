@@ -802,7 +802,9 @@ export default function UnderBusGame() {
                 <p>
                   Use <strong>ARROW KEYS</strong> to switch lanes. Click a
                   coworker to select them. Press <strong>SPACE</strong> to throw
-                  them into the path of the nearest bus.
+                  them into the path of the nearest bus. On mobile, tap a
+                  coworker to select them and use the buttons below to move and
+                  throw.
                 </p>
               </div>
               <div className={styles.disclaimer}>
@@ -861,6 +863,39 @@ export default function UnderBusGame() {
           </div>
         )}
       </div>
+
+      {/* Mobile touch controls */}
+      {screen === "playing" && (
+        <div className={styles.touchControls}>
+          <button
+            className={styles.touchBtn}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              movePlayer(gameStateRef.current, -1);
+            }}
+          >
+            ▲ Lane Up
+          </button>
+          <button
+            className={`${styles.touchBtn} ${styles.touchBtnThrow}`}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              throwSelectedCoworker(gameStateRef.current);
+            }}
+          >
+            Throw
+          </button>
+          <button
+            className={styles.touchBtn}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              movePlayer(gameStateRef.current, 1);
+            }}
+          >
+            ▼ Lane Down
+          </button>
+        </div>
+      )}
 
       {/* Score bar */}
       <div className={styles.scoreBar}>
