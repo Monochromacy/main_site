@@ -13,7 +13,9 @@ const innovations = [
     icon: "⚓",
     title: "DeepDive™ Analytics Suite",
     desc: "Our proprietary submarine-based analytics platform. Data scientists in sailor outfits conduct research at depths of up to 200 meters. Insights are delivered via underwater telegraph. The latency is terrible but the aesthetic is immaculate.",
-    type: "conceptual",
+    type: "real",
+    link: "/deepdive",
+    linkLabel: "Enter the submarine →",
   },
   {
     icon: "🎰",

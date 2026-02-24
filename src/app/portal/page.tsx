@@ -96,6 +96,17 @@ const APPS: AppDef[] = [
     tag: "Simulation",
   },
   {
+    id: "deepdive",
+    icon: "⚓",
+    name: "Deep Dive™",
+    dept: "Analytics Division",
+    status: "LIVE",
+    desc: "Submarine-based analytics immersion platform. Descend to depth. Collect insights. Avoid everything else. Data scientists in sailor outfits not included.",
+    link: "/deepdive",
+    version: "v1.0",
+    tag: "Simulation",
+  },
+  {
     id: "monomail",
     icon: "📬",
     name: "MonoMail™",
