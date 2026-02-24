@@ -95,6 +95,17 @@ const APPS: AppDef[] = [
     version: "v1.0",
     tag: "Simulation",
   },
+  {
+    id: "monomail",
+    icon: "📬",
+    name: "MonoMail™",
+    dept: "Internal Communications",
+    status: "LIVE",
+    desc: "Monochromacy's official internal email client. Your inbox is waiting. We cannot tell you what's in it. Read at your own risk.",
+    link: "/inbox",
+    version: "v1.0",
+    tag: "Comms",
+  },
 ];
 
 export default function Portal() {
