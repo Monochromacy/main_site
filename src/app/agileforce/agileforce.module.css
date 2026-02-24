@@ -31,7 +31,7 @@
 }
 
 .logoText {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 1.3rem;
   letter-spacing: 0.08em;
   color: var(--text);
@@ -97,7 +97,7 @@
 }
 
 .briefingTitle {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(3rem, 6vw, 5rem);
   letter-spacing: 0.08em;
   color: var(--text);
@@ -164,7 +164,7 @@
 }
 
 .selectTitle {
-  font-family: 'Playfair Display', serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: clamp(1.5rem, 3vw, 2.2rem);
   font-weight: 700;
   color: var(--text);
@@ -209,7 +209,7 @@
 }
 
 .diffLabel {
-  font-family: 'Playfair Display', serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 1rem;
   font-weight: 700;
   color: var(--text);
@@ -240,7 +240,7 @@
 }
 
 .countdownNumber {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(8rem, 20vw, 16rem);
   color: var(--accent);
   line-height: 1;
@@ -322,7 +322,7 @@
 }
 
 .obstacleCommand {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(2.5rem, 8vw, 5rem);
   letter-spacing: 0.05em;
   color: var(--text);
@@ -409,7 +409,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 5rem;
   letter-spacing: 0.05em;
   pointer-events: none;
@@ -448,7 +448,7 @@
 }
 
 .gradeDisplay {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
   letter-spacing: 0.05em;
   border: 2px solid;
@@ -459,7 +459,7 @@
 }
 
 .resultsTitle {
-  font-family: 'Playfair Display', serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: clamp(1rem, 2vw, 1.3rem);
   font-weight: 400;
   font-style: italic;

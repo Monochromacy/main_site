@@ -51,25 +51,26 @@ export default function Innovations() {
   return (
     <>
       <Nav />
-      <main style={{ paddingTop: "64px", background: "var(--white)", minHeight: "100vh" }}>
+      <main style={{ paddingTop: "64px", background: "var(--black)", minHeight: "100vh" }}>
         <section style={{ padding: "8rem 6rem", maxWidth: "1400px", margin: "0 auto" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", marginBottom: "5rem" }}>
             <div>
               <p style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "'IBM Plex Mono', monospace",
                 fontSize: "0.65rem", letterSpacing: "0.3em",
                 textTransform: "uppercase", color: "var(--accent)", marginBottom: "1rem"
-              }}>What We&apos;ve Built</p>
+              }}>&gt; WHAT_WE&apos;VE_BUILT</p>
               <h1 style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(2.5rem, 4vw, 4rem)", fontWeight: 700, lineHeight: 1.15
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: "clamp(2rem, 3.5vw, 3.5rem)", fontWeight: 700, lineHeight: 1.15,
+                color: "var(--white)"
               }}>
-                Products that <em style={{ fontStyle: "italic", color: "var(--accent)" }}>change</em><br />the game.
+                Products that <em style={{ fontStyle: "normal", color: "var(--accent)" }}>change</em><br />the game.
               </h1>
             </div>
             <p style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: "0.85rem", lineHeight: 2, color: "#555", paddingTop: "0.5rem"
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: "0.82rem", lineHeight: 2, color: "rgba(232,230,224,0.6)", paddingTop: "0.5rem"
             }}>
               Our innovation pipeline is constantly evolving. Some of what we&apos;ve built is real.
               Some of it exists only in the Monochromacy Ideation Metaspace™.
@@ -80,7 +81,8 @@ export default function Innovations() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
             {innovations.map((item) => (
               <div key={item.title} style={{
-                border: "1px solid rgba(10,10,10,0.1)",
+                border: "1px solid rgba(0,255,65,0.15)",
+                background: "rgba(0,255,65,0.02)",
                 overflow: "hidden",
                 transition: "all 0.3s",
               }}
@@ -89,14 +91,15 @@ export default function Innovations() {
                   (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(10,10,10,0.1)";
+                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(0,255,65,0.15)";
                   (e.currentTarget as HTMLDivElement).style.transform = "none";
                 }}
               >
                 <div style={{
                   height: "180px", background: "var(--black)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "3.5rem", position: "relative"
+                  fontSize: "3.5rem", position: "relative",
+                  borderBottom: "1px solid rgba(0,255,65,0.1)"
                 }}>
                   {item.icon}
                   <span style={{
@@ -105,28 +108,30 @@ export default function Innovations() {
                     padding: "0.3rem 0.7rem", border: "1px solid",
                     color: item.type === "real" ? "#5ab87e" : "var(--accent)",
                     borderColor: item.type === "real" ? "#5ab87e" : "var(--accent)",
-                    background: item.type === "real" ? "rgba(90,184,126,0.1)" : "rgba(200,181,96,0.1)",
-                    fontFamily: "'DM Mono', monospace",
+                    background: item.type === "real" ? "rgba(90,184,126,0.1)" : "rgba(0,255,65,0.1)",
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    textShadow: "none",
                   }}>
-                    {item.type === "real" ? "Live" : "Conceptual"}
+                    {item.type === "real" ? "[ LIVE ]" : "[ CONCEPT ]"}
                   </span>
                 </div>
                 <div style={{ padding: "1.75rem" }}>
                   <h3 style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem"
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: "1rem", fontWeight: 700, marginBottom: "0.75rem",
+                    color: "var(--white)"
                   }}>{item.title}</h3>
                   <p style={{
-                    fontFamily: "'DM Mono', monospace",
-                    fontSize: "0.78rem", lineHeight: 1.8, color: "#555"
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: "0.75rem", lineHeight: 1.8, color: "rgba(232,230,224,0.55)"
                   }}>{item.desc}</p>
                   {item.link && (
                     <a href={item.link} style={{
                       display: "inline-block", marginTop: "1.25rem",
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: "'IBM Plex Mono', monospace",
                       fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase",
-                      color: "var(--black)", textDecoration: "none",
-                      borderBottom: "1px solid var(--accent)", paddingBottom: "2px"
+                      color: "var(--accent)", textDecoration: "none",
+                      borderBottom: "1px solid rgba(0,255,65,0.4)", paddingBottom: "2px"
                     }}>
                       {item.linkLabel}
                     </a>

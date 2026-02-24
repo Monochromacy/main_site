@@ -58,7 +58,7 @@
 }
 
 .portalTitle {
-  font-family: 'Playfair Display', serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: clamp(2rem, 3.5vw, 3rem);
   font-weight: 700;
   color: var(--text);
@@ -240,7 +240,7 @@
 }
 
 .appName {
-  font-family: 'Playfair Display', serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);

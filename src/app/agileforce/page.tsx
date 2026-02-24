@@ -260,7 +260,7 @@ export default function AgileForce() {
       ? "#5ab87e"
       : grade.includes("NOTED")
       ? "#e05a5a"
-      : "#c8b560";
+      : "#00ff41";
 
   const timerPct = difficulty ? (timeRemaining / difficulty.windowMs) * 100 : 0;
 

@@ -24,13 +24,15 @@ export default function Nav() {
       borderBottom: "2px solid var(--accent)",
     }}>
       <Link href="/" style={{
-        fontFamily: "'Bebas Neue', sans-serif",
-        fontSize: "1.6rem",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontWeight: 700,
+        fontSize: "1.4rem",
         color: "var(--white)",
-        letterSpacing: "0.12em",
+        letterSpacing: "0.04em",
         textDecoration: "none",
       }}>
-        Mono<span style={{ color: "var(--accent)" }}>chromacy</span>
+        <span className="logo-full">Monochromacy.</span>
+        <span className="logo-mark">M</span>
       </Link>
 
       <ul style={{ display: "flex", gap: "2rem", listStyle: "none" }}>
@@ -46,7 +48,7 @@ export default function Nav() {
                 textTransform: "uppercase",
                 opacity: pathname === link.href ? 1 : 0.7,
                 transition: "all 0.2s",
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "'IBM Plex Mono', monospace",
               }}
             >
               {link.label}

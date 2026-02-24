@@ -68,8 +68,9 @@ const tweets = [
 ];
 
 const tickerItems = [
-  "INNOVATION","DISRUPTION","SYNERGY","AGILITY","THOUGHT LEADERSHIP",
-  "PARADIGM SHIFTS","DEEP DIVES","LEVERAGE","SCALABILITY","CIRCLE BACK",
+  "INNOVATION","//","DISRUPTION","//","SYNERGY","//","AGILITY","//",
+  "THOUGHT LEADERSHIP","//","PARADIGM SHIFTS","//","DEEP DIVES","//",
+  "LEVERAGE","//","SCALABILITY","//","CIRCLE BACK","//",
 ];
 
 export default function Home() {
@@ -80,10 +81,10 @@ export default function Home() {
         {/* HERO */}
         <section className={styles.hero}>
           <div className={styles.heroLeft}>
-            <p className={styles.heroEyebrow}>Fortune 500-Adjacent™ Company</p>
+            <p className={styles.heroEyebrow}>&gt; FORTUNE 500-ADJACENT™ COMPANY</p>
             <h1 className={styles.heroHeadline}>
               Moving Fast,<br />
-              <em>Breaking Everything.</em>
+              <em>Breaking Everything.</em><span className="cursor"> _</span>
             </h1>
             <p className={styles.heroSub}>
               At Monochromacy, we don&apos;t just disrupt industries — we disrupt the very
@@ -91,16 +92,16 @@ export default function Home() {
               and agility-positive. That&apos;s the Monochromacy way.
             </p>
             <div className={styles.heroCtas}>
-              <a href="/innovations" className={styles.btnPrimary}>Our Innovations</a>
-              <a href="#about" className={styles.btnOutline}>Learn More</a>
+              <a href="/innovations" className={styles.btnPrimary}>[ Our Innovations ]</a>
+              <a href="#about" className={styles.btnOutline}>[ Learn More ]</a>
             </div>
           </div>
           <div className={styles.heroRight}>
             <div className={styles.heroBadge}>
               <div className={styles.heroBadgeInner}>
-                <div className={styles.badgeIcon}>🏆</div>
-                <div className={styles.badgeText}>Award Eligible</div>
-                <div className={styles.badgeSub}>Self-Nominated • Est. 2020</div>
+                <div className={styles.badgeIcon}>[OK]</div>
+                <div className={styles.badgeText}>STATUS: AWARD ELIGIBLE</div>
+                <div className={styles.badgeSub}>SELF-NOM // EST. 2020</div>
               </div>
             </div>
           </div>
@@ -117,7 +118,7 @@ export default function Home() {
 
         {/* ABOUT */}
         <section id="about" className={styles.about}>
-          <p className={styles.sectionLabel}>Who We Are</p>
+          <p className={styles.sectionLabel}>&gt; WHO_WE_ARE</p>
           <div className={styles.missionGrid}>
             <div>
               <h2 className={styles.missionHeadline}>
@@ -157,9 +158,9 @@ export default function Home() {
         <section id="tweets" className={styles.tweets}>
           <div className={styles.tweetsHeader}>
             <div>
-              <p className={styles.sectionLabelLight}>Thought Leadership</p>
+              <p className={styles.sectionLabelLight}>&gt; THOUGHT_LEADERSHIP</p>
               <h2 className={styles.tweetsHeadline}>
-                Our <em>wisdom,</em><br />140 chars at a time.
+                OUTPUT //<br /><em>wisdom.log</em>
               </h2>
             </div>
             <div className={styles.socialLinks}>
@@ -199,7 +200,7 @@ export default function Home() {
           <div className={styles.footerGrid}>
             <div>
               <span className={styles.footerLogo}>
-                Mono<span>chromacy</span>
+                Monochromacy.
               </span>
               <p className={styles.footerTagline}>
                 We&apos;re a company. We do things. Some of those things are documented here.
