@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { callAI } from "@/lib/ai";
 
 export const runtime = "edge";
 
@@ -42,55 +43,13 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages } = body;
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "ANTHROPIC_API_KEY is not set. Add it as a Secret in Cloudflare Pages → Settings → Environment Variables and redeploy." },
-        { status: 500 }
-      );
-    }
-
-    if (!apiKey.startsWith("sk-")) {
-      return NextResponse.json(
-        { error: "ANTHROPIC_API_KEY appears malformed (should start with sk-)" },
-        { status: 500 }
-      );
-    }
-
-    const anthropicResponse = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: Array.isArray(messages) && messages.length > 0 ? messages : [{ role: "user", content: "Begin." }],
-      }),
+    const content = await callAI({
+      messages: Array.isArray(messages) && messages.length > 0 ? messages : [{ role: "user", content: "Begin." }],
+      systemPrompt: SYSTEM_PROMPT,
+      maxTokens: 1000,
     });
 
-    if (!anthropicResponse.ok) {
-      const errorBody = await anthropicResponse.json().catch(() => ({}));
-      return NextResponse.json(
-        { error: `Anthropic error ${anthropicResponse.status}: ${errorBody?.error?.message ?? JSON.stringify(errorBody)}` },
-        { status: anthropicResponse.status }
-      );
-    }
-
-    const data = await anthropicResponse.json();
-
-    if (!data?.content?.[0]?.text) {
-      return NextResponse.json(
-        { error: "Unexpected response shape from Anthropic API" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ content: data.content[0].text });
+    return NextResponse.json({ content });
 
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
